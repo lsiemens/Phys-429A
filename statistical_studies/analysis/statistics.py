@@ -1,22 +1,73 @@
 import numpy
 import scipy.stats
+import scipy.interpolate
+import cPickle as pickle
 
 def binning(x, min, max, width=1.0, density=False):
     bins = numpy.arange(min - width, max + 1, width) + 0.5*width
     data, _ = numpy.histogram(x, bins=bins, density=density)
     return data, numpy.arange(min, max + 1, width)
 
-def CPFinv_one_sigma(CPF, guess=(1,1), step=1, res=0.01):
+def precompute_CPFinv(mean_values):
+# takes mean_values to precompute
+# ---------------------------
+#    for mean in mean_values:
+#        errors = (mean - numpy.sqrt(mean), x + numpy.sqrt(mean))
+#        errors = CPFinv_one_sigma(lambda x: distributions.poisson_CPF(x, mean), guess=errors, step=numpy.sqrt(mean)/3, res=1.0E-9)
+
+    import distributions
+
+    errors = numpy.empty(shape=mean_values.shape + (2,))
+    Merr_min = mean_values - numpy.sqrt(mean_values)
+    Merr_max = mean_values + numpy.sqrt(mean_values)
+    step=numpy.sqrt(mean_values)/3.0
+    for i in range(len(mean_values)):
+        if i % int(len(mean_values) / 100) == 0:
+            print(i, len(mean_values)) 
+        err_guess = (Merr_min[i], Merr_max[i])
+        errors[i, :] = CPFinv_one_sigma(lambda x: distributions.poisson_CPF(x, mean_values[i]), mean_values[i], guess=err_guess, step=step[i], res=1.0E-9)
+    
+    data = (mean_values, errors)
+    
+    with open("CPFinv_cache.dat", "wb") as fout:
+        pickle.dump(data, fout)
+
+def load_CPFinv_dump(zero_zero=False):
+# returns interpolation functions for lower and upper bounds
+    data = None
+    with open("CPFinv_cache.dat", "rb") as fin:
+        data = pickle.load(fin)
+    if zero_zero:
+        lower = scipy.interpolate.interp1d([0] + data[0].tolist(), [0] + data[1][:, 0].tolist())
+        upper = scipy.interpolate.interp1d([0] + data[0].tolist(), [0] + data[1][:, 1].tolist())
+    else:
+        lower = scipy.interpolate.interp1d(data[0], data[1][:, 0])
+        upper = scipy.interpolate.interp1d(data[0], data[1][:, 1])
+    return lower, upper
+
+def CPFinv_one_sigma(CPF, mean, guess, step=1, res=0.01):
     # This method will break down for highly asymmetric distributions
     # where CPF(x_mean) < 0.15 or CPF(x_mean) > 0.85
     
     # for the poisson distribution the errors are within 10% of sqrt(x_mean) for mu >= 30
     # and if x_mean < 0.085033 then CPF(x_mean) < 0.15
-    p_target = (1.0 - scipy.special.erf(1/numpy.sqrt(2.0)))/2.0 # =~ 0.15
+    p_int = scipy.special.erf(1/numpy.sqrt(2.0)) # =~ 0.68
+    p_mid = CPF(mean)
+    p_min = p_mid - p_int/2
+    p_max = p_mid + p_int/2
+
+    if p_min < 0.0:
+        p_min = 0.0
+        p_max = p_int
+        guess = (0.0, guess[1])
+    elif p_max > 1.0:
+        p_max = 1.0
+        p_min = 1.0 - p_int
     
     errors = numpy.zeros(shape=(2))
     errors[:] = numpy.float("nan")
 
+    p_target = p_min
     x = guess[0]
     p = CPF(x)
     # get x to within one "step" of p_target
@@ -48,7 +99,7 @@ def CPFinv_one_sigma(CPF, guess=(1,1), step=1, res=0.01):
             break
 
     errors[0] = x
-    p_target = 1.0 - p_target # =~ 0.85
+    p_target = p_max
 
     x = guess[1]
     p = CPF(x)
@@ -90,26 +141,22 @@ def chi_squared(observed, expected, std):
     return ((observed - expected)/std)**2
 
 def one_parameter_fit(xaxis, data, model, pmin, pmax, steps):
+    lower, upper = load_CPFinv_dump(zero_zero=True)
+
     from matplotlib import pyplot
-    import distributions
     samples = numpy.sum(data)
     parameter = numpy.linspace(pmin, pmax, steps)
     chi2 = numpy.zeros(shape=parameter.shape)
     
-    for i, param in enumerate(parameter):
-        print(param, pmax)
-        theory = samples*model(xaxis, param)
-        theory_err = numpy.sqrt(samples*model(xaxis, param))
-        for i in range(len(theory)):
-            # if less then 30 events are predicted use full poisson errors
-            if theory[i] < 30:
-                errors = (theory[i] - theory_err[i], theory[i] + theory_err[i])
-                errors = CPFinv_one_sigma(lambda x: distributions.poisson_CPF(x, param), guess=errors, step=theory_err[i]/3, res=0.001)
-                if data[i] > theory[i]:
-                    theory_err[i] = errors[1] - theory[i]
-                else:
-                    theory_err[i] = theory[i] - errors[0]
-        chi2[i] = chi_squared_statistic(data, theory, theory_err)
+    theory = samples*model(xaxis[:, numpy.newaxis], parameter)
+    theory_err = numpy.empty(shape=theory.shape)
+    try:
+        theory_err[data[:, numpy.newaxis] < theory] = lower(theory[data[:, numpy.newaxis] < theory])
+        theory_err[data[:, numpy.newaxis] >= theory] = upper(theory[data[:, numpy.newaxis] > theory])
+
+    except ValueError:
+        print(theory.max())
+    chi2 = chi_squared_statistic(data[:, numpy.newaxis], theory, theory_err - theory)
 
     min_chi2_i = numpy.argmin(chi2)
     p_min, chi2_min = parameter[min_chi2_i], chi2[min_chi2_i]
@@ -119,20 +166,26 @@ def one_parameter_fit(xaxis, data, model, pmin, pmax, steps):
     print("parameter: " + str(p_min) + ", Chi sqrd: " + str(chi2_min))
     print("probability of finding larger chi2: " + str(1 - scipy.stats.chi2.cdf(chi2_min, dof)))
     
-    pyplot.plot(parameter, chi2)
-    pyplot.show()
+#    pyplot.plot(parameter, chi2)
+#    pyplot.show()
 
-    pyplot.plot(xaxis, chi_squared(data, samples*model(xaxis, p_min), numpy.sqrt(samples*model(xaxis, p_min))))
-    pyplot.show()
+    theory = samples*model(xaxis, p_min)
+    theory_err = numpy.empty(shape=theory.shape)
+    theory_err[data < theory] = lower(theory[data < theory])
+    theory_err[data >= theory] = upper(theory[data > theory])
+
+    pyplot.plot(xaxis, chi_squared(data, theory, theory_err - theory))
+#    pyplot.show()
 
     pyplot.plot(xaxis, data)
     pyplot.title("best fit by minimizing $\chi^2$")
-    pyplot.errorbar(xaxis, samples*model(xaxis, p_min), yerr=numpy.sqrt(samples*model(xaxis, p_min)))
+    pyplot.errorbar(xaxis, theory, yerr=[theory - lower(theory), upper(theory) - theory])
     pyplot.show()
 
 def two_parameter_fit(xaxis, data, model, amin, amax, bmin, bmax, steps):
+    lower, upper = load_CPFinv_dump(zero_zero=True)
+
     from matplotlib import pyplot
-    import distributions
     samples = numpy.sum(data)
     a = numpy.linspace(amin, amax, steps)
     b = numpy.linspace(bmin, bmax, steps)
@@ -140,7 +193,14 @@ def two_parameter_fit(xaxis, data, model, amin, amax, bmin, bmax, steps):
     A, B = numpy.meshgrid(a, b)
     
     theory = samples*model(xaxis[:, numpy.newaxis, numpy.newaxis], A[numpy.newaxis, :, :], B[numpy.newaxis, :, :])
-    chi2 = chi_squared_statistic(data[:, numpy.newaxis, numpy.newaxis], theory, numpy.sqrt(theory))
+    theory_err = numpy.empty(shape=theory.shape)
+    try:
+        theory_err[data[:, numpy.newaxis, numpy.newaxis] < theory] = lower(theory[data[:, numpy.newaxis, numpy.newaxis] < theory])
+        theory_err[data[:, numpy.newaxis, numpy.newaxis] >= theory] = upper(theory[data[:, numpy.newaxis, numpy.newaxis] >= theory])
+    except ValueError:
+        print(theory.max())
+    
+    chi2 = chi_squared_statistic(data[:, numpy.newaxis, numpy.newaxis], theory, theory_err - theory)
 
     min_chi2_i = numpy.argmin(chi2.flat)
     a_min, b_min, chi2_min = A.flat[min_chi2_i], B.flat[min_chi2_i], chi2.flat[min_chi2_i]
@@ -151,15 +211,23 @@ def two_parameter_fit(xaxis, data, model, amin, amax, bmin, bmax, steps):
     print("a: " + str(a_min) + ", b: " + str(b_min) + ", Chi sqrd: " + str(chi2_min))
     print("probability of finding larger chi2: " + str(1 - scipy.stats.chi2.cdf(chi2_min, dof)))
 
-    A, B = A[::-1, :], B[::-1, :]
-    levels = numpy.power(10, numpy.linspace(0, numpy.log10(numpy.log10(chi2.max())), 50))
-    pyplot.imshow(numpy.log10(chi2), aspect="auto", extent=(a.min(), a.max(), b.min(), b.max()))
+    levels = numpy.power(10, numpy.linspace(-2, numpy.log10(numpy.log10(chi2.max())), 50))
+    pyplot.imshow(numpy.log10(chi2), aspect="auto", extent=(a.min(), a.max(), b.max(), b.min()))
     pyplot.title("$\log_{10}(\chi^2)$ surface")
     pyplot.contour(A, B, numpy.log10(chi2), levels, colors="k", linewidths=0.5)
     pyplot.colorbar()
     pyplot.show()
 
+    theory = samples*model(xaxis, a_min, b_min/1.2)
+    theory_err = numpy.empty(shape=theory.shape)
+    theory_err[data < theory] = lower(theory[data < theory])
+    theory_err[data >= theory] = upper(theory[data >= theory])
+
+    pyplot.plot(xaxis, chi_squared(data, theory, theory_err - theory))
+    print(chi_squared_statistic(data, theory, theory_err - theory))
+#    pyplot.show()
+
     pyplot.plot(xaxis, data)
     pyplot.title("best fit by minimizing $\chi^2$")
-    pyplot.errorbar(xaxis, samples*model(xaxis, a_min, b_min), yerr=numpy.sqrt(samples*model(xaxis, a_min, b_min)))
+    pyplot.errorbar(xaxis, theory, yerr=[theory - lower(theory), upper(theory) - theory])
     pyplot.show()
