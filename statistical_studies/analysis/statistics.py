@@ -134,6 +134,65 @@ def CPFinv_one_sigma(CPF, mean, guess, step=1, res=0.01):
     errors[1] = x
     return errors
     
+def find_zero(func, minima, step=1, res=0.01):
+    zeros = numpy.zeros(shape=(2))
+    zeros[:] = numpy.float("nan")
+    
+    x = minima
+    value = func(x)
+    # get x to within one "step" of p_target
+    while(True):
+        if value < 0.0:
+            x = x + step
+            value = func(x)
+            if value > 0:
+                break
+        else:
+            break
+
+    dx = 2*step
+    # get x to within one "res" of p_target
+    while(numpy.abs(value) > res):
+        dx = 0.75*dx
+        if value > 0:
+            x = x - dx
+            value = func(x)
+        elif value < 0:
+            x = x + dx
+            value = func(x)
+        else:
+            break
+
+    zeros[1] = x
+
+    x = minima
+    value = func(x)
+    # get x to within one "step" of p_target
+    while(True):
+        if value < 0.0:
+            x = x - step
+            value = func(x)
+            if value > 0:
+                break
+        else:
+            break
+
+    dx = 2*step
+    # get x to within one "res" of p_target
+    while(numpy.abs(value) > res):
+        dx = 0.75*dx
+        if value > 0:
+            x = x + dx
+            value = func(x)
+        elif value < 0:
+            x = x - dx
+            value = func(x)
+        else:
+            break
+
+    zeros[0] = x
+    return zeros
+    
 def chi_squared_statistic(observed, expected, std):
     return numpy.sum(((observed - expected)/std)**2, axis=0)
 
@@ -156,18 +215,23 @@ def one_parameter_fit(xaxis, data, model, pmin, pmax, steps):
 
     except ValueError:
         print(theory.max())
+        raise
     chi2 = chi_squared_statistic(data[:, numpy.newaxis], theory, theory_err - theory)
 
     min_chi2_i = numpy.argmin(chi2)
     p_min, chi2_min = parameter[min_chi2_i], chi2[min_chi2_i]
     dof = len(xaxis) - 2
+
+    chi2 = scipy.interpolate.interp1d(parameter, chi2)
+    confidence_interval = find_zero(lambda x:chi2(x) - chi2_min - 1.0, p_min, step=(pmax - pmin)/100.0, res=1.0E-5)
+    print(confidence_interval)
     
     print("dof: " + str(dof))
     print("parameter: " + str(p_min) + ", Chi sqrd: " + str(chi2_min))
     print("probability of finding larger chi2: " + str(1 - scipy.stats.chi2.cdf(chi2_min, dof)))
-    
-#    pyplot.plot(parameter, chi2)
-#    pyplot.show()
+
+    pyplot.plot(parameter, chi2(parameter))
+    pyplot.show()
 
     theory = samples*model(xaxis, p_min)
     theory_err = numpy.empty(shape=theory.shape)
@@ -199,12 +263,29 @@ def two_parameter_fit(xaxis, data, model, amin, amax, bmin, bmax, steps):
         theory_err[data[:, numpy.newaxis, numpy.newaxis] >= theory] = upper(theory[data[:, numpy.newaxis, numpy.newaxis] >= theory])
     except ValueError:
         print(theory.max())
+        raise
     
     chi2 = chi_squared_statistic(data[:, numpy.newaxis, numpy.newaxis], theory, theory_err - theory)
 
     min_chi2_i = numpy.argmin(chi2.flat)
     a_min, b_min, chi2_min = A.flat[min_chi2_i], B.flat[min_chi2_i], chi2.flat[min_chi2_i]
     dof = len(xaxis) - 3
+
+    a_i, b_i = numpy.unravel_index(min_chi2_i, chi2.shape)
+    print(A[a_i, b_i], B[a_i, b_i])
+
+    chi2_b = scipy.interpolate.interp1d(b, chi2[:, b_i])
+    chi2_a = scipy.interpolate.interp1d(a, chi2[a_i, :])
+    confidence_interval_b = find_zero(lambda x:chi2_b(x) - chi2_min - 1.0, b_min, step=(bmax - bmin)/100.0, res=1.0E-5)
+    confidence_interval_a = find_zero(lambda x:chi2_a(x) - chi2_min - 1.0, a_min, step=(amax - amin)/100.0, res=1.0E-5)
+    print(confidence_interval_a)
+    print(confidence_interval_b)
+
+    pyplot.plot(b, chi2_b(b) - chi2_min - 1)
+    pyplot.show()
+    pyplot.plot(a, chi2_a(a) - chi2_min - 1)
+    pyplot.show()
+
     
     print("dof: " + str(dof))
     print("log10(chi squared): " + str(numpy.log10(chi2_min)))
@@ -218,13 +299,12 @@ def two_parameter_fit(xaxis, data, model, amin, amax, bmin, bmax, steps):
     pyplot.colorbar()
     pyplot.show()
 
-    theory = samples*model(xaxis, a_min, b_min/1.2)
+    theory = samples*model(xaxis, a_min, b_min)
     theory_err = numpy.empty(shape=theory.shape)
     theory_err[data < theory] = lower(theory[data < theory])
     theory_err[data >= theory] = upper(theory[data >= theory])
 
     pyplot.plot(xaxis, chi_squared(data, theory, theory_err - theory))
-    print(chi_squared_statistic(data, theory, theory_err - theory))
 #    pyplot.show()
 
     pyplot.plot(xaxis, data)

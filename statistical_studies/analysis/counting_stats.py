@@ -7,12 +7,11 @@ import statistics
 def poisson_gaussian(x, mu):
     return distributions.gaussian(x, mu, numpy.sqrt(mu))
 
-max = 10
 resolution = 100
 fnames = ["../data/Run_1.dat", "../data/Run_2.dat", "../data/Run_3.dat", "../data/Run_4.dat"]
-ranges = [(100, 187), (0, 13), (0, 13), (68, 129)]
-mu_range = [(140, 150), (0.5, 13), (0.5, 13), (68, 129)]
-sigma_range = [(10, 14), (0.5, 4), (0.5, 4), (8, 11)]
+ranges = [(102, 185), (0, 12), (0, 12), (70, 127)]
+mu_range = [(140, 150), (0.5, 12), (0.5, 12), (70, 127)]
+sigma_range = [(10, 16), (0.5, 4), (0.5, 4), (8, 11)]
 print("Gaussian constrained Fit")
 for i in []:
     fname = fnames[i]
@@ -24,7 +23,7 @@ for i in []:
     
     model = poisson_gaussian
 
-    statistics.one_parameter_fit(bins, data, model, mu_min, mu_max, 200)
+    statistics.one_parameter_fit(bins, data, model, mu_min, mu_max, 2000)
     
 print("Poisson Fit")
 for i in []:
@@ -40,7 +39,7 @@ for i in []:
     statistics.one_parameter_fit(bins, data, model, mu_min, mu_max, 2000)
 
 print("Gaussian Fit")
-for i in [1]:
+for i in [0]:
     fname = fnames[i]
     min, max = ranges[i]
     mu_min, mu_max = mu_range[i]
@@ -52,3 +51,7 @@ for i in [1]:
     model = distributions.gaussian
 
     statistics.two_parameter_fit(bins, data, model, mu_min, mu_max, sigma_min, sigma_max, 200)
+
+ranges = [(112, 175), (0, 12), (0, 12), (70, 122)]
+mu_range = [(140, 150), (0.5, 12), (0.5, 12), (70, 127)]
+sigma_range = [(10, 14), (0.5, 4), (0.5, 4), (8, 11)]
