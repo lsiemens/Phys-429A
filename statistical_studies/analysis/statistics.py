@@ -324,61 +324,41 @@ def five_parameter_fit(xaxis, data, model, guess, bounds):
     from matplotlib import pyplot
     
     def chi_stat(params):
-        a, b, c, d, e = params
-        theory = model(xaxis, a, b, c, d, e)
+        theory = model(xaxis, params)
         chi2 = chi_squared_statistic_poisson(data, theory)
         return chi2
 
     print(chi_stat, guess)
     result = scipy.optimize.minimize(chi_stat, guess, bounds=bounds)
-    print(result)
-    x = result.x
-    print(x)
-    a, b, c, d, e = x
-    pyplot.plot(xaxis, model(xaxis, a, b, c, d, e))
-    pyplot.plot(xaxis, data)
-#    pyplot.plot(xaxis, chi_squared_poisson(data, model(xaxis, a, b, c, d, e)))
-    pyplot.show()
+    if not result.success:
+        raise ValueError("Non-convergent minimization.")
+    parameters = result.x
+    print(parameters)
+    a_min, b_min, c_min, d_min, e_min = parameters
 
-    dof = len(xaxis) - 3
+    chi2_min = chi_squared_statistic_poisson(data, model(xaxis, parameters))
+    dof = len(xaxis) - 5
 
-    a_i, b_i = numpy.unravel_index(min_chi2_i, chi2.shape)
-    print(A[a_i, b_i], B[a_i, b_i])
-
-    chi2_b = scipy.interpolate.interp1d(b, chi2[:, b_i])
-    chi2_a = scipy.interpolate.interp1d(a, chi2[a_i, :])
-    confidence_interval_b = find_zero(lambda x:chi2_b(x) - chi2_min - 1.0, b_min, step=(bmax - bmin)/100.0, res=1.0E-5)
-    confidence_interval_a = find_zero(lambda x:chi2_a(x) - chi2_min - 1.0, a_min, step=(amax - amin)/100.0, res=1.0E-5)
+    confidence_interval_a = find_zero(lambda x:chi_squared_statistic_poisson(data, model(xaxis, (x, b_min, c_min, d_min, e_min))) - chi2_min - 1.0, a_min, step=(bounds[0][1] - bounds[0][0])/10000.0, res=1.0E-5)
     print(confidence_interval_a)
+    confidence_interval_b = find_zero(lambda x:chi_squared_statistic_poisson(data, model(xaxis, (a_min, x, c_min, d_min, e_min))) - chi2_min - 1.0, b_min, step=(bounds[1][1] - bounds[1][0])/10000.0, res=1.0E-5)
     print(confidence_interval_b)
+    confidence_interval_c = find_zero(lambda x:chi_squared_statistic_poisson(data, model(xaxis, (a_min, b_min, x, d_min, e_min))) - chi2_min - 1.0, c_min, step=(bounds[2][1] - bounds[2][0])/10000.0, res=1.0E-5)
+    print(confidence_interval_c)
+    confidence_interval_d = find_zero(lambda x:chi_squared_statistic_poisson(data, model(xaxis, (a_min, b_min, c_min, x, e_min))) - chi2_min - 1.0, d_min, step=(bounds[3][1] - bounds[3][0])/10000.0, res=1.0E-5)
+    print(confidence_interval_d)
+    confidence_interval_e = find_zero(lambda x:chi_squared_statistic_poisson(data, model(xaxis, (a_min, b_min, c_min, d_min, x))) - chi2_min - 1.0, e_min, step=(bounds[4][1] - bounds[4][0])/10000.0, res=1.0E-5)
+    print(confidence_interval_e)
 
-    pyplot.plot(b, chi2_b(b) - chi2_min - 1)
-    pyplot.show()
-    pyplot.plot(a, chi2_a(a) - chi2_min - 1)
-    pyplot.show()
-
-    
     print("dof: " + str(dof))
-    print("log10(chi squared): " + str(numpy.log10(chi2_min)))
-    print("a: " + str(a_min) + ", b: " + str(b_min) + ", Chi sqrd: " + str(chi2_min))
+    print("a: " + str(a_min) + ", b: " + str(b_min) + ", c: " + str(c_min) + ", d: " + str(d_min) + ", e: " + str(e_min))
+    print("Chi sqrd: " + str(chi2_min))
     print("probability of finding larger chi2: " + str(1 - scipy.stats.chi2.cdf(chi2_min, dof)))
 
-    levels = numpy.power(10, numpy.linspace(-2, numpy.log10(numpy.log10(chi2.max())), 50))
-    pyplot.imshow(numpy.log10(chi2), aspect="auto", extent=(a.min(), a.max(), b.max(), b.min()))
-    pyplot.title("$\log_{10}(\chi^2)$ surface")
-    pyplot.contour(A, B, numpy.log10(chi2), levels, colors="k", linewidths=0.5)
-    pyplot.colorbar()
-    pyplot.show()
-
-    theory = samples*model(xaxis, a_min, b_min)
-    theory_err = numpy.empty(shape=theory.shape)
-    theory_err[data < theory] = lower(theory[data < theory])
-    theory_err[data >= theory] = upper(theory[data >= theory])
-
-    pyplot.plot(xaxis, chi_squared(data, theory, theory_err - theory))
-#    pyplot.show()
+    theory = model(xaxis, parameters)
+    theory_err = numpy.sqrt(theory)
 
     pyplot.plot(xaxis, data)
     pyplot.title("best fit by minimizing $\chi^2$")
-    pyplot.errorbar(xaxis, theory, yerr=[theory - lower(theory), upper(theory) - theory])
+    pyplot.errorbar(xaxis, theory, yerr=theory_err)
     pyplot.show()
