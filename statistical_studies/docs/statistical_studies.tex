@@ -1,0 +1,198 @@
+% ****** Start of file apssamp.tex ******
+%
+%   This file is part of the APS files in the REVTeX 4.1 distribution.
+%   Version 4.1r of REVTeX, August 2010
+%
+%   Copyright (c) 2009, 2010 The American Physical Society.
+%
+%   See the REVTeX 4 README file for restrictions and more information.
+%
+% TeX'ing this file requires that you have AMS-LaTeX 2.0 installed
+% as well as the rest of the prerequisites for REVTeX 4.1
+%
+% See the REVTeX 4 README file
+% It also requires running BibTeX. The commands are as follows:
+%
+%  1)  latex apssamp.tex
+%  2)  bibtex apssamp
+%  3)  latex apssamp.tex
+%  4)  latex apssamp.tex
+%
+\documentclass[%
+ reprint,
+%superscriptaddress,
+%groupedaddress,
+%unsortedaddress,
+%runinaddress,
+%frontmatterverbose, 
+%preprint,
+%showpacs,preprintnumbers,
+%nofootinbib,
+%nobibnotes,
+%bibnotes,
+ amsmath,amssymb,
+ aps,
+%pra,
+%prb,
+%rmp,
+%prstab,
+%prstper,
+%floatfix,
+]{revtex4-1}
+
+\usepackage{graphicx}% Include figure files
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+\usepackage{amsmath}% better dot placment
+\usepackage{systeme}% systemes of equations
+%\usepackage{hyperref}% add hypertext capabilities
+%\usepackage[mathlines]{lineno}% Enable numbering of text and display math
+%\linenumbers\relax % Commence numbering lines
+
+%\usepackage[showframe,%Uncomment any one of the following lines to test 
+%%scale=0.7, marginratio={1:1, 2:3}, ignoreall,% default settings
+%%text={7in,10in},centering,
+%%margin=1.5in,
+%%total={6.5in,8.75in}, top=1.2in, left=0.9in, includefoot,
+%%height=10in,a5paper,hmargin={3cm,0.8in},
+%]{geometry}
+
+% Personal definitions
+\newcommand{\dvec}[1]{\dot{\vec{#1}}}
+\newcommand{\grad}{\vec{\nabla}}
+\newcommand{\intV}[1]{\int_{-\infty}^{\infty} #1 d^3x}
+\newcommand{\intVdot}[1]{\int_{-\infty}^{\infty} #1 d^3\dot{x}}
+\newcommand{\intVVdot}[1]{\int_{-\infty}^{\infty}\int_{-\infty}^{\infty} #1 d^3xd^3\dot{x}}
+
+
+\begin{document}
+
+\title{Statistical Studies: Experiment }% Force line breaks with \
+
+\author{Luke A. Siemens}
+\email{lsiemens@uvic.ca}
+
+\date{\today}
+
+\begin{abstract}
+XXX
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+The firs component of this experiment focus on the statistical atool sand teqniques for analyzing adata and statistical distribution. Spesificaly methods for fitting statistical distrbutions and tecniques for determining if data is consistent with a theoretical model are investigated. In the second component of theis experiment the statistical method investigated in the first section are applied to the practical problem of calibrating labritory equiment, and arror analysis of the subsequent mesurements. In the corse of this lab we will be investigating the Poisson distribution, the Gaussian distributheon the $\chi^2$ distribution and the $\chi^2$ statistic and theoir application to the analysis of counting statistics and the callibration of a multi-chanel analyzer.
+
+\section{Theory}
+The statistic of counting random events is modeled by assuming the process in question can be described as a large number of simple binary events which each have a small probability of leading to a count being mesured, where the number of binary event $n$ is $n\sim1/x$ each event having a probability of the binary even occuring is $p\sim1/x$ for $x<<1$. The probability that $\nu$ events will occur in a given interval is described by the binomial distribution,
+
+\[
+B_{n,p}(\nu)={n \choose \nu}p^\nu(1-p)^{n-\nu}
+\]
+
+In the limiting case of a continuous process $p -> 0$ and $n -> \infty$ the distribution simplifies to the Poisson distribution.
+
+\begin{equation}
+P_\mu(\nu)=\frac{e^{-\mu}\mu^\nu}{\nu!}
+\label{poisson_dristribution}
+\end{equation}
+
+where the expected number of events $\bar{\nu}$ is $\bar{\nu}=\sum_{\nu=0}^\infty \nu P_\mu(\nu)=\mu$ and the varience is $\sigma_\nu^2=\sum_{\nu=0}^\infty(\nu-\mu)^2P_\mu(\nu) = \mu$. The Poisson distribution can be simplified in the limiting case where $\mu$ is large, in that case the Poisson distribution \eqref{poisson_dristribution} aproches a gaussian distribution with mean $\mu$ and varience $\mu$. In this limit the distribution becomes,
+
+\begin{equation}
+P_\mu(\nu)\approx G_{\mu, \sqrt{\mu}}(\nu)=\frac{1}{\sqrt{2\pi\mu}}e^{-(\nu-\mu)^2/2\mu}
+\label{poisson_gaussian_limit}
+\end{equation}
+
+\subsection{$\chi^2$ Test}
+The $\chi^2$ test test is a method for determining the probability that a set of mesurements is consistent with a given model assuming Gaussian errors. The $\chi^2$ test uses the $\chi^2$ statistic which in the case of descreat variables is defined as,
+
+\[
+\chi^2=\sum_{i}\left(\frac{O_i - E_i}{\sigma_i}\right)^2
+\]
+
+where $O_i$ is the observed value, $E_i$ is the expected value and $\sigma_i$ is the standard deviation. Given the expected value is distributed as a Poisson distribution with mean $\mu=E_i$ and varianece $\sigma_i=\sqrt{E_i}$ then the $\chi^2$ statistic is,
+
+\begin{equation}
+\chi^2=\sum_{i}\frac{\left(O_i - E_i\right)^2}{E_i}
+\label{chi_squared_statistic}
+\end{equation}
+
+Assuming the errors are gaussaing then the $\chi^2$ statistic is described by the associated $\chi^2$ distribution. The $\chi^2$ distribution which has the cumulative distribution function (CDF),
+
+\begin{equation}
+\text{Prob}_d(\chi^2 \leq \chi_o^2)=\frac{1}{2^{d/2}\Gamma(d/2)}\int_0^{\chi_o^2} t^{d/2-1}e^{-t/2}dt
+\label{chi_squared_prob}
+\end{equation}
+
+So the probability of measureing a $\chi^2$ as large or larger than $\chi_o^2$ is $\text{Prob}_d(\chi^2 \geq \chi_o^2)=1-\text{Prob}_d(\chi^2 \leq \chi_o^2)$.
+
+\subsection{Poisson errors and modified $\chi^2$ statistic}
+The statistic given by equation \eqref{chi_squared_statistic} can be used with the $\chi^2$ assuming $O_i$ is described by a gausian distribution but that assumption is invalid when $E_i$ is not sufficently large that the Poisson distribution can be aproximated as a Gaussian distribution. If when $E_i$ is small the $\chi^2$ statistic must be modiefied to account for the asymmetry of the Poisson distribution. For the guassian distribution the probability of getting a value below the lower bound of a one sigma confidence interval is $p=\frac{1}{2} - \operatorname{erf}({\frac{1}{\sqrt{2}}})/2$, for the modified $\chi^2$ statistic insead of the standard deviation lets use the value $\left|\nu_o - \mu\right|$ where $\nu_o$ solves the equation $\text{Prob}_\mu\left(\nu \leq \nu_o\right)=p$ or $\text{Prob}_\mu\left(\nu \geq \nu_o\right)=1-p$ depending on whether the observed value is above or below the expected value. To evaluate these probabilities for $\mu$. The CDF of the poison distribution is,
+
+\[
+\text{Prob}_\mu\left(\nu \leq \nu_o\right)=\sum_{k=0}^{\nu_o}\frac{e^{-\mu}\mu^\nu}{\nu!}
+\]
+
+where $\nu_o$ is a positive integer. When $\mu \sim 1$ a continouse analouge to the Poisson CDF is needed to evaluate $\nu_o$ for the adjusted $\chi^2$ statistic. In the paper \textit{Continuous Counterparts of Poisson and Binomial Distributions and their Properites}\cite{continuous_poisson_paper} A. Ilienko defines a continuous analogue to the Poisson distribution, the CDF of this distribution is
+
+\[
+\text{Prob}_\mu\left(\nu \leq \nu_o\right)=\frac{\Gamma(\nu_o+1, \mu)}{\Gamma(\nu_o + 1)}
+\]
+
+where $\nu_o$ is a positive real number, $\Gamma(x, \lambda)$ is the incomplete Gamma function $\Gamma(x, \lambda)=\int_\lambda^\infty t^{x-1}e^{-t}dt$ and $\Gamma(x)=\Gamma(x, 0)$ is the Gamma function. Note that if $\nu_o$ is a positive integer then,
+
+\[
+\text{Prob}_\mu\left(\nu \leq \nu_o\right)=\frac{\Gamma(\nu_o+1, \mu)}{\Gamma(\nu_o + 1)}=\sum_{k=0}^{\nu_o}\frac{e^{-\mu}\mu^\nu}{\nu!}
+\]
+
+Using the continuous analogue to the Poisson distribution the adjusted $\chi^2$ statistic is defined as,
+
+\[
+\chi^2 = \sum_i \left(\frac{O_i - E_i}{\nu_{o_i} - E_i}\right)^2
+\]
+
+\[
+\frac{\Gamma(\nu_{o_i}+1, E_i)}{\Gamma(\nu_{o_i} + 1)} = \begin{cases}
+p & \text{if $O_i < E_i$}\\
+1 - p & \text{if $O_i > E_i$}
+\end{cases}
+\]
+
+where $p=\frac{1}{2} - \operatorname{erf}({\frac{1}{\sqrt{2}}})/2$. It should be noted that for $E_i > 30$ the relitive difrence between $\left|\nu_{o_i}-E_i\right|$ and $\sqrt{E_i}$ is less than ten percent and that if $E_i < 0.08503$ then the lower $\nu_{o_i}$ will be such that $\nu_{o_i} > E_i$.
+
+\subsection{Energy resolution}
+The resolution $R$ of a spectromter is,
+
+\begin{equation}
+R = \frac{\delta E}{E}\cdot100
+\label{energy_resolution}
+\end{equation}
+
+where $\delta E$ is the Full Width at Half Maximum (FWHM) of an energy peak and where $E$ is the energy at the maximum of the energy peak. The resolution $R$ gauges the detectors ability to resolve spectral features.
+
+\section{Design and Results}
+The experiment is split into two components, in the first section the distribution of counts produced by a sintilator(s) is measured and popaired to theoretical distributions, in the seccond section the methodes investigated for analyzing distributions is used to callibrate a multi-channel analyzer and  to measuree the resolution of the device.
+
+\subsection{Section I}
+The distribution produced by one sintilator for the casses of $\mu\approx5$ and $\mu\approx100$ where measured. We setup the sintilator with a $-1.5kV$ bias voltage. The signal from the sintilarot was passed into an amplifier and then through a discriminarot. the signal from te disescriminator was then passed to a timer/counter. Two sets of counts were colected with this setup each with 500 measurements. In the first set the descriminator cutoff was tuned to produce a low count rate $\mu\approx5$, in the second set the cutoff was tuned to produce a high count rate of $\mu\approx100$.
+
+In the second part two sintilatorst where used to reject any signal that was not corrillated between the devieces, so as to reduce the random noise from the sintelators. The sintelators where stacked verticaly with aproximatly $6cm$ vertical seporation. The signals from the two sintelators where then passed into two amplifieers and then into two descriminators. The two signels where then passed into a corrillator with corillation setting set to two. The output from the corrillator was then connected to a counter/timer. As in the first part two sets of data was taken with 500 measurements each, one with $\mu\approx5$ and the other with $\mu\approx100$.
+
+\subsection{Section II}
+using a NaI detector we callibrated a multi-channel analyzer by fitting the energy peak of known isotopes, using the analyssis tecniques investigated in Section I. Using the calibrated measurements of a known sample to find the energy resolution of the multi-channel analyzer.
+
+\section{Analysis}
+
+\section{Conclution}
+
+\begin{thebibliography}{1}
+
+\bibitem{continuous_poisson_paper} A. Ilienko, \textit{Continuous Counterparts of Poisson and Binomial Distributions and their Properties}, (Annales Univ. Sci. Budapest., Sect. Comp. 39(2013) 137-147).
+
+\end{thebibliography}
+ 
+\end{document}
+%
+% ****** End of file apssamp.tex ******
