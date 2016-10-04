@@ -331,6 +331,7 @@ def five_parameter_fit(xaxis, data, model, guess, bounds):
     print(chi_stat, guess)
     result = scipy.optimize.minimize(chi_stat, guess, bounds=bounds)
     if not result.success:
+        print(result)
         raise ValueError("Non-convergent minimization.")
     parameters = result.x
     print(parameters)
