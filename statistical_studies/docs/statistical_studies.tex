@@ -75,7 +75,7 @@
 \date{\today}
 
 \begin{abstract}
-XXX
+Two energy peaks of Cs-137 decay where observed with a multi-channel analyzer and NaI detector, a Gamma-ray emission line with energy $679.1_{-2.7}^{+2.7}$KeV and a X-ray emission line with energy $14.88_{-0.15}^{0.15}$KeV was observed. The resolution of the Multi-channel analyzer was determened to be $6.943\pm0.039$.
 \end{abstract}
 
 \maketitle
@@ -155,12 +155,19 @@ Using the continuous analogue to the Poisson distribution the adjusted $\chi^2$ 
 
 \[
 \frac{\Gamma(\nu_{o_i}+1, E_i)}{\Gamma(\nu_{o_i} + 1)} = \begin{cases}
-p & \text{if $O_i < E_i$}\\
-1 - p & \text{if $O_i > E_i$}
+p_\text{mid} - p_\text{int}/2 & \text{if $O_i < E_i$}\\
+p_\text{mid} + p_\text{int}/2 & \text{if $O_i > E_i$}
 \end{cases}
 \]
 
-where $p=\frac{1}{2} - \operatorname{erf}({\frac{1}{\sqrt{2}}})/2$. It should be noted that for $E_i > 30$ the relitive difrence between $\left|\nu_{o_i}-E_i\right|$ and $\sqrt{E_i}$ is less than ten percent and that if $E_i < 0.08503$ then the lower $\nu_{o_i}$ will be such that $\nu_{o_i} > E_i$.
+where $p_\text{mid} = \Gamma(E_i+1, E_i)/\Gamma(E_i + 1)$ and $p_\text{int}=\operatorname{erf}({\frac{1}{\sqrt{2}}})$. It should be noted that for $E_i > 30$ the relitive difrence between $\left|\nu_{o_i}-E_i\right|$ and $\sqrt{E_i}$ is less than ten percent and that if $p_\text{mid} < p_\text{int}/2$ the interval must be set to,
+
+\[
+\frac{\Gamma(\nu_{o_i}+1, E_i)}{\Gamma(\nu_{o_i} + 1)} = \begin{cases}
+0 & \text{if $O_i < E_i$}\\
+p_\text{int} & \text{if $O_i > E_i$}
+\end{cases}
+\]
 
 \subsection{Energy resolution}
 The resolution $R$ of a spectromter is,
@@ -181,15 +188,66 @@ The distribution produced by one sintilator for the casses of $\mu\approx5$ and 
 In the second part two sintilatorst where used to reject any signal that was not corrillated between the devieces, so as to reduce the random noise from the sintelators. The sintelators where stacked verticaly with aproximatly $6cm$ vertical seporation. The signals from the two sintelators where then passed into two amplifieers and then into two descriminators. The two signels where then passed into a corrillator with corillation setting set to two. The output from the corrillator was then connected to a counter/timer. As in the first part two sets of data was taken with 500 measurements each, one with $\mu\approx5$ and the other with $\mu\approx100$.
 
 \subsection{Section II}
-using a NaI detector we callibrated a multi-channel analyzer by fitting the energy peak of known isotopes, using the analyssis tecniques investigated in Section I. Using the calibrated measurements of a known sample to find the energy resolution of the multi-channel analyzer.
+using a NaI detector we callibrated a multi-channel analyzer by fitting the energy peaks of Na-22 and Co-60 using the analyssis tecniques investigated in Section I. Once calibrated a gamaray and xray peak of Cs-137 was measured and used to find the energy resolution of the multi-channel analyzer.
 
 \section{Analysis}
+\subsection{section I}
+
+
+\subsection{section II}
+When fitting the energy peaks, it was assumed that peak itself was Gaussian and that the local region around the peak could be described by a straight line. The model of the energy peak used in the fitting was,
+\[
+y = A e^{-(x - \mu)^2/c} + m (x - \mu) + b
+\]
+
+\begin{table}
+\centering
+\caption{Channel number and Energy of peaks}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+sample & $\mu$ in (channel) & dof & $\chi^2$ & p-value & energy in (MeV) \\ \hline
+Na-22 & $337.159_{-0.016}^{+0.016}$ & 55 & $200.92$ & 0.0\% & $0.511$ \\ \hline
+Na-22 & $822.709_{-0.071}^{+0.071}$ & 113 & $121.90$ & 26.8\% & $1.274$ \\ \hline
+Co-60 & $755.289_{-0.040}^{+0.041}$ & 82 & $97.97$ & 11.0\% & $1.17$ \\ \hline
+Co-60 & $856.509_{-0.041}^{+0.041}$ & 100 & $104.25$ & 36.6\% & $1.33$ \\ \hline
+Cs-137 & $443.914_{-0.016}^{+0.017}$ & 95 & $550.09$ & 0.0\% & $0.6612$ \\ \hline
+Cs-137 & $22.130_{-0.012}^{+0.012}$ & 15 & $2024.62$ & 0.0\% & $0.0322$ \\ \hline
+\end{tabular}
+\end{table}
+
+The Gamma-ray line energies are from \textit{Scintillation Spectrometry}\cite{scintillation}, the energy of the Ba $\text{K}\alpha$ line in the Cs-137 spectrum is from \textit{X-ray wavelengths}\cite{xray}.
+
+Using the energy peaks from the Na-22 and Co-60 samples the Multi-channel analyzer was calibrated using linear regression. The calibration equation was found to be,
+
+\[
+E = \left(1.5748 \pm 0.0061 \text{KeV}/\text{channel}\right)x - 19.971 \pm 0.066 \text{KeV}
+\]
+
+Using the calibration equation the energies of the Cs-137 where found to be,
+
+\begin{table}
+\centering
+\caption{Energy of Cs-137 lines}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+$\mu$ in (channel) & observed energy & expected energy & percent error \\ \hline
+$443.914_{-0.016}^{+0.017}$ & $679.1_{-2.7}^{+2.7}$KeV & $661.2$KeV & $+2.71$\% \\ \hline
+$22.130_{-0.012}^{+0.012}$ & $14.88_{-0.15}^{0.15}$KeV & $32.2$KeV & $-53.8$\% \\ \hline
+\end{tabular}
+\end{table}
+
+The using the $661.2$ KeV line of Cs-137 the parameter $c=323.33_{-0.51}^{+0.51}$ in $\text{channels}^2$ the resolution of the Multi-channel analyzer was determined to be $6.943\pm0.039$.
 
 \section{Conclution}
+Using a multi-channel analyzer to measure the gamma-ray emission of Cs-137 two lines where observed. A Gamma-ray emission line with energy $679.1_{-2.7}^{+2.7}$KeV was oberved and found to have a $+2.71$\% deviation from the expected energy of $661.2$KeV. A X-ray emission line with energy $14.88_{-0.15}^{0.15}$KeV was observed and found to have a $-53.8$\% deviation from the expected energy of $32.2$KeV. The resolution of the Multi-channel analyzer was found to be $6.943\pm0.039$.
 
 \begin{thebibliography}{1}
 
 \bibitem{continuous_poisson_paper} A. Ilienko, \textit{Continuous Counterparts of Poisson and Binomial Distributions and their Properties}, (Annales Univ. Sci. Budapest., Sect. Comp. 39(2013) 137-147).
+
+\bibitem{scintillation} R. L. Heath, \textit{Scintillation Spectrometry: Gamma-ray Spectrum Catalogue}, (2nd Edition, Vol. 1, August 1964).
+
+\bibitem{xray} J. A. Bearden, \textit{Xray wavelengths}, (Review of Modern Physics, January 1967, p 86-99).
 
 \end{thebibliography}
  
