@@ -67,7 +67,7 @@
 
 \begin{document}
 
-\title{Statistical Studies: Experiment }% Force line breaks with \
+\title{Statistical Studies: Experiment\# 11}% Force line breaks with \
 
 \author{Luke A. Siemens}
 \email{lsiemens@uvic.ca}
@@ -75,17 +75,17 @@
 \date{\today}
 
 \begin{abstract}
-Two energy peaks of Cs-137 decay where observed with a multi-channel analyzer and NaI detector, a Gamma-ray emission line with energy $679.1_{-2.7}^{+2.7}$KeV and a X-ray emission line with energy $14.88_{-0.15}^{0.15}$KeV was observed. The resolution of the Multi-channel analyzer was determened to be $6.943\pm0.039$.
+Two energy peaks of Cs-137 decay where observed with a multichannel analyzer and NaI detector, a Gamma-ray emission line with energy $679.1_{-2.7}^{+2.7}$KeV and a X-ray emission line with energy $14.88_{-0.15}^{0.15}$KeV was observed. The resolution of the multichannel analyzer was determined to be $6.943\pm0.039$.
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
 
-The firs component of this experiment focus on the statistical atool sand teqniques for analyzing adata and statistical distribution. Spesificaly methods for fitting statistical distrbutions and tecniques for determining if data is consistent with a theoretical model are investigated. In the second component of theis experiment the statistical method investigated in the first section are applied to the practical problem of calibrating labritory equiment, and arror analysis of the subsequent mesurements. In the corse of this lab we will be investigating the Poisson distribution, the Gaussian distributheon the $\chi^2$ distribution and the $\chi^2$ statistic and theoir application to the analysis of counting statistics and the callibration of a multi-chanel analyzer.
+The firs component of this experiment focus on the statistical tool and techniques for analyzing data and statistical distribution. Specifically methods for fitting statistical distributions and techniques for determining if data is consistent with a theoretical model are investigated. In the second component of this experiment the statistical method investigated in the first section are applied to the practical problem of calibrating laboratory equipment, and error analysis of the subsequent measurements. In the course of this lab we will be investigating the Poisson distribution, the Gaussian distribution the $\chi^2$ distribution and the $\chi^2$ statistic and their application to the analysis of counting statistics and the calibration of a multichannel analyzer.
 
 \section{Theory}
-The statistic of counting random events is modeled by assuming the process in question can be described as a large number of simple binary events which each have a small probability of leading to a count being mesured, where the number of binary event $n$ is $n\sim1/x$ each event having a probability of the binary even occuring is $p\sim1/x$ for $x<<1$. The probability that $\nu$ events will occur in a given interval is described by the binomial distribution,
+The statistic of counting random events is modeled by assuming the process in question can be described as a large number of simple binary events which each have a small probability of leading to a count being measured, where the number of binary event $n$ is $n\sim1/x$ each event having a probability of the binary event occurring is $p\sim1/x$ for $x<<1$. The probability that $\nu$ events will occur in a given interval is described by the binomial distribution,
 
 \[
 B_{n,p}(\nu)={n \choose \nu}p^\nu(1-p)^{n-\nu}
@@ -98,7 +98,7 @@ P_\mu(\nu)=\frac{e^{-\mu}\mu^\nu}{\nu!}
 \label{poisson_dristribution}
 \end{equation}
 
-where the expected number of events $\bar{\nu}$ is $\bar{\nu}=\sum_{\nu=0}^\infty \nu P_\mu(\nu)=\mu$ and the varience is $\sigma_\nu^2=\sum_{\nu=0}^\infty(\nu-\mu)^2P_\mu(\nu) = \mu$. The Poisson distribution can be simplified in the limiting case where $\mu$ is large, in that case the Poisson distribution \eqref{poisson_dristribution} aproches a gaussian distribution with mean $\mu$ and varience $\mu$. In this limit the distribution becomes,
+where the expected number of events $\bar{\nu}$ is $\bar{\nu}=\sum_{\nu=0}^\infty \nu P_\mu(\nu)=\mu$ and the variance is $\sigma_\nu^2=\sum_{\nu=0}^\infty(\nu-\mu)^2P_\mu(\nu) = \mu$. The Poisson distribution can be simplified in the limiting case where $\mu$ is large, in that case the Poisson distribution \eqref{poisson_dristribution} approaches a Gaussian distribution with mean $\mu$ and variance $\mu$. In this limit the distribution becomes,
 
 \begin{equation}
 P_\mu(\nu)\approx G_{\mu, \sqrt{\mu}}(\nu)=\frac{1}{\sqrt{2\pi\mu}}e^{-(\nu-\mu)^2/2\mu}
@@ -106,30 +106,30 @@ P_\mu(\nu)\approx G_{\mu, \sqrt{\mu}}(\nu)=\frac{1}{\sqrt{2\pi\mu}}e^{-(\nu-\mu)
 \end{equation}
 
 \subsection{$\chi^2$ Test}
-The $\chi^2$ test test is a method for determining the probability that a set of mesurements is consistent with a given model assuming Gaussian errors. The $\chi^2$ test uses the $\chi^2$ statistic which in the case of descreat variables is defined as,
+The $\chi^2$ test test is a method for determining the probability that a set of measurements is consistent with a given model assuming Gaussian errors. The $\chi^2$ test uses the $\chi^2$ statistic which in the case of discreet variables is defined as,
 
 \[
 \chi^2=\sum_{i}\left(\frac{O_i - E_i}{\sigma_i}\right)^2
 \]
 
-where $O_i$ is the observed value, $E_i$ is the expected value and $\sigma_i$ is the standard deviation. Given the expected value is distributed as a Poisson distribution with mean $\mu=E_i$ and varianece $\sigma_i=\sqrt{E_i}$ then the $\chi^2$ statistic is,
+where $O_i$ is the observed value, $E_i$ is the expected value and $\sigma_i$ is the standard deviation. Given the expected value is distributed as a Poisson distribution with mean $\mu=E_i$ and variance $\sigma_i=\sqrt{E_i}$ then the $\chi^2$ statistic is,
 
 \begin{equation}
 \chi^2=\sum_{i}\frac{\left(O_i - E_i\right)^2}{E_i}
 \label{chi_squared_statistic}
 \end{equation}
 
-Assuming the errors are gaussaing then the $\chi^2$ statistic is described by the associated $\chi^2$ distribution. The $\chi^2$ distribution which has the cumulative distribution function (CDF),
+Assuming the errors are Gaussian then the $\chi^2$ statistic is described by the associated $\chi^2$ distribution. The $\chi^2$ distribution which has the cumulative distribution function (CDF),
 
 \begin{equation}
 \text{Prob}_d(\chi^2 \leq \chi_o^2)=\frac{1}{2^{d/2}\Gamma(d/2)}\int_0^{\chi_o^2} t^{d/2-1}e^{-t/2}dt
 \label{chi_squared_prob}
 \end{equation}
 
-So the probability of measureing a $\chi^2$ as large or larger than $\chi_o^2$ is $\text{Prob}_d(\chi^2 \geq \chi_o^2)=1-\text{Prob}_d(\chi^2 \leq \chi_o^2)$.
+So the probability of measuring a $\chi^2$ as large or larger than $\chi_o^2$ is $\text{Prob}_d(\chi^2 \geq \chi_o^2)=1-\text{Prob}_d(\chi^2 \leq \chi_o^2)$.
 
 \subsection{Poisson errors and modified $\chi^2$ statistic}
-The statistic given by equation \eqref{chi_squared_statistic} can be used with the $\chi^2$ assuming $O_i$ is described by a gausian distribution but that assumption is invalid when $E_i$ is not sufficently large that the Poisson distribution can be aproximated as a Gaussian distribution. If when $E_i$ is small the $\chi^2$ statistic must be modiefied to account for the asymmetry of the Poisson distribution. For the guassian distribution the probability of getting a value below the lower bound of a one sigma confidence interval is $p=\frac{1}{2} - \operatorname{erf}({\frac{1}{\sqrt{2}}})/2$, for the modified $\chi^2$ statistic insead of the standard deviation lets use the value $\left|\nu_o - \mu\right|$ where $\nu_o$ solves the equation $\text{Prob}_\mu\left(\nu \leq \nu_o\right)=p$ or $\text{Prob}_\mu\left(\nu \geq \nu_o\right)=1-p$ depending on whether the observed value is above or below the expected value. To evaluate these probabilities for $\mu$. The CDF of the poison distribution is,
+The statistic given by equation \eqref{chi_squared_statistic} can be used with the $\chi^2$ assuming $O_i$ is described by a Gaussian distribution but that assumption is invalid when $E_i$ is not sufficiently large that the Poisson distribution can be approximated as a Gaussian distribution. If when $E_i$ is small the $\chi^2$ statistic must be modified to account for the asymmetry of the Poisson distribution. For the Gaussian distribution the probability of getting a value below the lower bound of a one sigma confidence interval is $p=\frac{1}{2} - \operatorname{erf}({\frac{1}{\sqrt{2}}})/2$, for the modified $\chi^2$ statistic instead of the standard deviation lets use the value $\left|\nu_o - \mu\right|$ where $\nu_o$ solves the equation $\text{Prob}_\mu\left(\nu \leq \nu_o\right)=p$ or $\text{Prob}_\mu\left(\nu \geq \nu_o\right)=1-p$ depending on whether the observed value is above or below the expected value. To evaluate these probabilities for $\mu$. The CDF of the poison distribution is,
 
 \[
 \text{Prob}_\mu\left(\nu \leq \nu_o\right)=\sum_{k=0}^{\nu_o}\frac{e^{-\mu}\mu^\nu}{\nu!}
@@ -160,7 +160,7 @@ p_\text{mid} + p_\text{int}/2 & \text{if $O_i > E_i$}
 \end{cases}
 \]
 
-where $p_\text{mid} = \Gamma(E_i+1, E_i)/\Gamma(E_i + 1)$ and $p_\text{int}=\operatorname{erf}({\frac{1}{\sqrt{2}}})$. It should be noted that for $E_i > 30$ the relitive difrence between $\left|\nu_{o_i}-E_i\right|$ and $\sqrt{E_i}$ is less than ten percent and that if $p_\text{mid} < p_\text{int}/2$ the interval must be set to,
+where $p_\text{mid} = \Gamma(E_i+1, E_i)/\Gamma(E_i + 1)$ and $p_\text{int}=\operatorname{erf}({\frac{1}{\sqrt{2}}})$. It should be noted that for $E_i > 30$ the relative difference between $\left|\nu_{o_i}-E_i\right|$ and $\sqrt{E_i}$ is less than ten percent and that if $p_\text{mid} < p_\text{int}/2$ the interval must be set to,
 
 \[
 \frac{\Gamma(\nu_{o_i}+1, E_i)}{\Gamma(\nu_{o_i} + 1)} = \begin{cases}
@@ -170,7 +170,7 @@ p_\text{int} & \text{if $O_i > E_i$}
 \]
 
 \subsection{Energy resolution}
-The resolution $R$ of a spectromter is,
+The resolution $R$ of a spectrometer is,
 
 \begin{equation}
 R = \frac{\delta E}{E}\cdot100
@@ -180,19 +180,60 @@ R = \frac{\delta E}{E}\cdot100
 where $\delta E$ is the Full Width at Half Maximum (FWHM) of an energy peak and where $E$ is the energy at the maximum of the energy peak. The resolution $R$ gauges the detectors ability to resolve spectral features.
 
 \section{Design and Results}
-The experiment is split into two components, in the first section the distribution of counts produced by a sintilator(s) is measured and popaired to theoretical distributions, in the seccond section the methodes investigated for analyzing distributions is used to callibrate a multi-channel analyzer and  to measuree the resolution of the device.
+The experiment is split into two components, in the first section the distribution of counts produced by a sintilator(s) is measured and compared to theoretical distributions, in the second section the methods investigated for analyzing distributions is used to calibrate a multichannel analyzer and  to measure the resolution of the device.
 
 \subsection{Section I}
-The distribution produced by one sintilator for the casses of $\mu\approx5$ and $\mu\approx100$ where measured. We setup the sintilator with a $-1.5kV$ bias voltage. The signal from the sintilarot was passed into an amplifier and then through a discriminarot. the signal from te disescriminator was then passed to a timer/counter. Two sets of counts were colected with this setup each with 500 measurements. In the first set the descriminator cutoff was tuned to produce a low count rate $\mu\approx5$, in the second set the cutoff was tuned to produce a high count rate of $\mu\approx100$.
+The distribution produced by one sintilator for the cases of $\mu\approx5$ and $\mu\approx100$ where measured. We setup the sintilator with a $-1.5kV$ bias voltage. The signal from the sintilarot was passed into an amplifier and then through a discriminator. the signal from the discriminator was then passed to a timer/counter. Two sets of counts were collected with this setup each with 500 measurements. In the first set the discriminator cutoff was tuned to produce a low count rate $\mu\approx5$ (set \#1.1), in the second set the cutoff was tuned to produce a high count rate of $\mu\approx100$ (set \#1.2).
 
-In the second part two sintilatorst where used to reject any signal that was not corrillated between the devieces, so as to reduce the random noise from the sintelators. The sintelators where stacked verticaly with aproximatly $6cm$ vertical seporation. The signals from the two sintelators where then passed into two amplifieers and then into two descriminators. The two signels where then passed into a corrillator with corillation setting set to two. The output from the corrillator was then connected to a counter/timer. As in the first part two sets of data was taken with 500 measurements each, one with $\mu\approx5$ and the other with $\mu\approx100$.
+In the second part two sintilatorst where used to reject any signal that was not corrillated between the devices, so as to reduce the random noise from the sintelators. The sintelators where stacked vertically with approximately $6cm$ vertical separation. The signals from the two sintelators where then passed into two amplifiers and then into two discriminators. The two signals where then passed into a corrillator with corillation setting set to two. The output from the corrillator was then connected to a counter/timer. As in the first part two sets of data was taken with 500 measurements each, one with $\mu\approx5$ (set \#2.1) and the other with $\mu\approx100$ (set \#2.2).
 
 \subsection{Section II}
-using a NaI detector we callibrated a multi-channel analyzer by fitting the energy peaks of Na-22 and Co-60 using the analyssis tecniques investigated in Section I. Once calibrated a gamaray and xray peak of Cs-137 was measured and used to find the energy resolution of the multi-channel analyzer.
+The signal from a NaI detector with 750V power supply was passed to a \textit{Pocket MCA: 8000A}. The multichannel analyzer was set to record 1024 channels over two minutes for each of the samples. The multichannel analyzer was calibrated by fitting the energy peaks of Na-22 and Co-60 and using linear regression along with the known energy peaks of the Na-22 and Co-60 lines. Once calibrated a Gamma-ray and a X-ray peak of Cs-137 was measured and used to find the energy resolution of the multichannel analyzer.
 
 \section{Analysis}
 \subsection{section I}
+The four sets of counts where fitted two three model distributions using $\chi^2$ minimization. The asymmetric Poisson errors where used in calculating the $\chi^2$ since number of counts per bin was small. The model distributions used where the Poisson distribution, the Gaussian distribution and the Gaussian limit of the Poisson distribution. When fitting no bins bellow the lowest nonzero or above the highest nonzero bin where used.
 
+\begin{table}[!htbp]
+\centering
+\caption{Fit: Gaussian limit of the Poisson distribution}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+set \# & $\mu$ in (counts) & dof & $\chi^2$ & p-value \\ \hline
+1.2 & $143.55_{-0.48}^{+0.48}$ & 82 & $116.47$ & 0.7\% \\ \hline
+1.1 & $4.567_{-0.086}^{+0.082}$ & 11 & $25.65$ & 0.7\% \\ \hline
+2.1 & $4.924_{-0.082}^{+0.077}$ & 11 & $25.13$ & 0.9\% \\ \hline
+2.2 & $96.09_{-0.38}^{+0.37}$ & 56 & $91.59$ & 0.2\% \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption{Fit: Poisson distribution}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+set \# & $\mu$ in (counts) & dof & $\chi^2$ & p-value \\ \hline
+1.2 & $143.42_{-0.52}^{+0.23}$ & 82 & $116.53$ & 0.7\% \\ \hline
+1.1 & $4.602_{-0.099}^{+0.095}$ & 11 & $11.09$ & 43.6\% \\ \hline
+2.1 & $4.884_{-0.098}^{+0.094}$ & 11 & $6.65$ & 82.7\% \\ \hline
+2.2 & $95.95_{-0.36}^{+0.37}$ & 56 & $91.40$ & 0.2\% \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption{Fit: Gaussian distribution}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+set \# & $\mu$ in (counts) & $\sigma$ in ($\text{counts}^2$) & dof & $\chi^2$ & p-value \\ \hline
+1.2 & $143.31_{-0.60}^{+0.59}$ & $13.82_{-0.44}^{0.45}$ & 81 & $92.27$ & 18.41\% \\ \hline
+1.1 & $4.545_{-0.124}^{+0.077}$ & $2.188_{-0.074}^{0.065}$ & 10 & $25.21$ & 0.5\% \\ \hline
+2.1 & $4.834_{-0.123}^{+0.083}$ & $2.347_{-0.67}^{0.077}$ & 10 & $21.56$ & 0.2\% \\ \hline
+2.2 & NA & NA & 55 & NA & NA \\ \hline
+\end{tabular}
+\end{table}
+
+The fit of set \# 2.2 to the Gaussian distribution failed.
 
 \subsection{section II}
 When fitting the energy peaks, it was assumed that peak itself was Gaussian and that the local region around the peak could be described by a straight line. The model of the energy peak used in the fitting was,
@@ -200,7 +241,9 @@ When fitting the energy peaks, it was assumed that peak itself was Gaussian and 
 y = A e^{-(x - \mu)^2/c} + m (x - \mu) + b
 \]
 
-\begin{table}
+The best fit parameters where found by minimizing the $\chi^2$ using the function \textit{scipy.optimize.minimize} from the Python package \textit{scipy}. Since the minimum counts per channel exceeded three hundred counts the Gaussian limit of the Poisson distribution was used in calculating the $\chi^2$.
+
+\begin{table}[!htbp]
 \centering
 \caption{Channel number and Energy of peaks}
 \begin{tabular}{|l|l|l|l|l|l|}
@@ -217,7 +260,7 @@ Cs-137 & $22.130_{-0.012}^{+0.012}$ & 15 & $2024.62$ & 0.0\% & $0.0322$ \\ \hlin
 
 The Gamma-ray line energies are from \textit{Scintillation Spectrometry}\cite{scintillation}, the energy of the Ba $\text{K}\alpha$ line in the Cs-137 spectrum is from \textit{X-ray wavelengths}\cite{xray}.
 
-Using the energy peaks from the Na-22 and Co-60 samples the Multi-channel analyzer was calibrated using linear regression. The calibration equation was found to be,
+Using the energy peaks from the Na-22 and Co-60 samples the multichannel analyzer was calibrated using linear regression. The calibration equation was found to be,
 
 \[
 E = \left(1.5748 \pm 0.0061 \text{KeV}/\text{channel}\right)x - 19.971 \pm 0.066 \text{KeV}
@@ -225,7 +268,7 @@ E = \left(1.5748 \pm 0.0061 \text{KeV}/\text{channel}\right)x - 19.971 \pm 0.066
 
 Using the calibration equation the energies of the Cs-137 where found to be,
 
-\begin{table}
+\begin{table}[!htbp]
 \centering
 \caption{Energy of Cs-137 lines}
 \begin{tabular}{|l|l|l|l|l|l|}
@@ -236,10 +279,12 @@ $22.130_{-0.012}^{+0.012}$ & $14.88_{-0.15}^{0.15}$KeV & $32.2$KeV & $-53.8$\% \
 \end{tabular}
 \end{table}
 
-The using the $661.2$ KeV line of Cs-137 the parameter $c=323.33_{-0.51}^{+0.51}$ in $\text{channels}^2$ the resolution of the Multi-channel analyzer was determined to be $6.943\pm0.039$.
+The using the $661.2$ KeV line of Cs-137 the parameter $c=323.33_{-0.51}^{+0.51}$ in $\text{channels}^2$ the resolution of the multichannel analyzer was determined to be $6.943\pm0.039$.
 
-\section{Conclution}
-Using a multi-channel analyzer to measure the gamma-ray emission of Cs-137 two lines where observed. A Gamma-ray emission line with energy $679.1_{-2.7}^{+2.7}$KeV was oberved and found to have a $+2.71$\% deviation from the expected energy of $661.2$KeV. A X-ray emission line with energy $14.88_{-0.15}^{0.15}$KeV was observed and found to have a $-53.8$\% deviation from the expected energy of $32.2$KeV. The resolution of the Multi-channel analyzer was found to be $6.943\pm0.039$.
+\section{Conclusion}
+Using a multichannel analyzer to measure the gamma-ray emission of Cs-137 two lines where observed. A Gamma-ray emission line with energy $679.1_{-2.7}^{+2.7}$KeV was observed and found to have a $+2.71$\% deviation from the expected energy of $661.2$KeV. A X-ray emission line with energy $14.88_{-0.15}^{0.15}$KeV was observed and found to have a $-53.8$\% deviation from the expected energy of $32.2$KeV. The resolution of the multichannel analyzer was found to be $6.943\pm0.039$.
+
+\pagebreak
 
 \begin{thebibliography}{1}
 
