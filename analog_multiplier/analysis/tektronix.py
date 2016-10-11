@@ -55,8 +55,8 @@ class tektronix:
 
 #from matplotlib import pyplot
 #Tek = tektronix()
-#data = Tek.load_file("s1y5x5.1.csv")
-#data = Tek.load_file("s3y8.9x8.9.1.csv")
+#data = Tek.load_file("../data/s1y5x5.1.csv")
+#data = Tek.load_file("../data/s3y8.9x8.9.1.csv")
 
 #data[2,1] = -0.5*(data[2,1] - 0.65)#set3
 

@@ -10,8 +10,8 @@ def poisson_gaussian(x, mu):
 resolution = 100
 fnames = ["../data/Run_1.dat", "../data/Run_2.dat", "../data/Run_3.dat", "../data/Run_4.dat"]
 ranges = [(102, 185), (0, 12), (0, 12), (70, 127)]
-mu_range = [(140, 150), (0.5, 12), (0.5, 12), (70, 127)]
-sigma_range = [(10, 16), (0.5, 4), (0.5, 4), (8, 11)]
+mu_range = [(140, 150), (0.5, 12), (0.5, 12), (90, 100)]
+sigma_range = [(10, 16), (0.5, 4), (0.5, 4), (10.5, 11)]
 print("Gaussian constrained Fit")
 for i in []:
     fname = fnames[i]
@@ -39,7 +39,7 @@ for i in []:
     statistics.one_parameter_fit(bins, data, model, mu_min, mu_max, 2000)
 
 print("Gaussian Fit")
-for i in [0]:
+for i in [3]:
     fname = fnames[i]
     min, max = ranges[i]
     mu_min, mu_max = mu_range[i]

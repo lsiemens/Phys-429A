@@ -17,10 +17,11 @@ tek = tektronix.tektronix()
 a, b, c = [], [], []
 r1 = []
 r2 = []
-fnames = os.listdir()
-fnames = [fname for fname in fnames if fname[:2] == "R2"]
+fnames = os.listdir("../data/")
+fnames = ["../data/" + fname for fname in fnames if fname[:2] == "R2"]
 for fname in fnames[2:]:
     data = tek.load_file(fname)
+    fname = fname[8:]
     fname = fname[2:]
     fname = fname.split("R1",1)
     fname = [fname[0]] + fname[1].split("V",1)
